@@ -18,5 +18,6 @@ public record UserDTO(
         @NotNull(message = "Password is required")
                 @NotBlank(message = "Password cannot be blank")
         String password,
+        @NotNull(message = "Role is required")
         ROLE role
 ) { }

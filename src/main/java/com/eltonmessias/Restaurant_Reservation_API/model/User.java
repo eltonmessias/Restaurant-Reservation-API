@@ -27,6 +27,7 @@ public class User {
     @Email(message = "Enter a valid email")
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
     private ROLE role;
 
 

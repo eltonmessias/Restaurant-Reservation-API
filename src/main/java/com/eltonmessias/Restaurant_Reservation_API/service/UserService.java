@@ -1,10 +1,12 @@
 package com.eltonmessias.Restaurant_Reservation_API.service;
 
+import com.eltonmessias.Restaurant_Reservation_API.dto.LoginDTO;
 import com.eltonmessias.Restaurant_Reservation_API.dto.UserDTO;
 import com.eltonmessias.Restaurant_Reservation_API.model.User;
 import com.eltonmessias.Restaurant_Reservation_API.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
@@ -26,8 +28,11 @@ public class UserService {
         return user;
     }
 
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+
     @Autowired
     private UserRepository userRepository;
+
     public UserDTO registerUser( UserDTO userDTO) {
             if (userRepository.existsByEmail(userDTO.email())) {
                 throw new IllegalArgumentException("Email already exists");
@@ -35,10 +40,22 @@ public class UserService {
             User newUser = new User();
             newUser.setName(userDTO.name());
             newUser.setEmail(userDTO.email());
-            newUser.setPassword(userDTO.password());
+            newUser.setPassword(encoder.encode(userDTO.password()));
             newUser.setRole(userDTO.role());
             userRepository.save(newUser);
             return convertToDTO(newUser);
 
+    }
+
+    public UserDTO loginUser(LoginDTO loginDTO) {
+        User user = userRepository.findByEmail(loginDTO.email());
+        if (user == null) {
+            throw new IllegalArgumentException("Invalid email or password");
+        }
+
+        if(!(encoder.matches(loginDTO.password(), user.getPassword()))) {
+            throw new IllegalArgumentException("Invalid email or password");
+        }
+        return convertToDTO(user);
     }
 }

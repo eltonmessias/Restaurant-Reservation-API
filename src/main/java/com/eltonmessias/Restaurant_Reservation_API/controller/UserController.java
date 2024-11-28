@@ -1,5 +1,6 @@
 package com.eltonmessias.Restaurant_Reservation_API.controller;
 
+import com.eltonmessias.Restaurant_Reservation_API.dto.LoginDTO;
 import com.eltonmessias.Restaurant_Reservation_API.dto.UserDTO;
 import com.eltonmessias.Restaurant_Reservation_API.model.User;
 import com.eltonmessias.Restaurant_Reservation_API.repository.UserRepository;
@@ -11,15 +12,13 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.View;
 
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth/")
@@ -50,6 +49,17 @@ public class UserController {
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.CONFLICT);
         }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody @Valid LoginDTO loginDTO, BindingResult bindingResult) {
+        try {
+            UserDTO authenticatedUser = userService.loginUser(loginDTO);
+            return new ResponseEntity<>(authenticatedUser, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
+        }
+
 
 
     }
