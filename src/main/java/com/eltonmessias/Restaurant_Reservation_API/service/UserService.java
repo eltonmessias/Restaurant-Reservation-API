@@ -18,6 +18,7 @@ public class UserService {
 
     private UserDTO convertToDTO(User user) {
         return new UserDTO(
+                user.getId(),
                 user.getName(),
                 user.getEmail(),
                 user.getPassword(),

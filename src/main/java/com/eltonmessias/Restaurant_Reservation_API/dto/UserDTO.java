@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 
 
 public record UserDTO(
+        Long id,
         @NotNull(message = "The name is necessary")
                 @NotBlank(message = "The name cannot be blank")
         String name,
