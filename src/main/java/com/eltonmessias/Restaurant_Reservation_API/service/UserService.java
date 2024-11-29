@@ -10,11 +10,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
-    private static UserDTO convertToDTO(User user) {
+    private UserDTO convertToDTO(User user) {
         return new UserDTO(
                 user.getName(),
                 user.getEmail(),
@@ -22,7 +24,7 @@ public class UserService {
                 user.getRole()
         );
     }
-    private static User convertToEntity(UserDTO userDTO) {
+    private User convertToEntity(UserDTO userDTO) {
         User user = new User();
         BeanUtils.copyProperties(userDTO, user);
         return user;
@@ -57,5 +59,9 @@ public class UserService {
             throw new IllegalArgumentException("Invalid email or password");
         }
         return convertToDTO(user);
+    }
+
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 }
