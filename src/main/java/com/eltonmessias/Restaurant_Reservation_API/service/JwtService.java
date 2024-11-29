@@ -24,24 +24,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET = "jksdhfjhjhweihuehuiroh545uwh??M<ndnnfnjdbbhsj>N>neeo^$&(*$#Hojejdfhjie3543jb3";
-
-    private final String secretKey;
-
-    public JwtService() {
-        secretKey = generatedSecretKey();
-    }
-
-    private String generatedSecretKey() {
-        try {
-            KeyGenerator keygen = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey secretKey = keygen.generateKey();
-            System.out.println("SecretKey: " + secretKey.toString());
-            return Base64.getEncoder().encodeToString(secretKey.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error generating secret key", e);
-        }
-    }
+    private static final String SECRET = "jksdhfjhjhweihuehuiroh545uwhMndnnfnjdbbhsjneeoHojejdfhjie3543jb3";
 
     public String generateToken(String email) {
         Map<String, Object> claims = new HashMap<>();
@@ -50,14 +33,13 @@ public class JwtService {
                 .setClaims(claims)
                 .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*30))
-                .signWith(getKey(), SignatureAlgorithm.HS256).compact();
-
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // 30 minutos
+                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     private Key getKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        System.out.println("Decodificação da chave Base64 bem-sucedida.");
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -73,11 +55,13 @@ public class JwtService {
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getKey())
-                .build().parseClaimsJws(token).getBody();
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String email  = extractUserEmail(token);
+        final String email = extractUserEmail(token);
         return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
