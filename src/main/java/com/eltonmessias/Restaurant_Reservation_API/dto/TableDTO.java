@@ -11,5 +11,4 @@ public record TableDTO(
         @Min(value = 2, message = "The minimum capacity is 2")
         int capacity,
         TABLE_STATUS status
-) {
-}
+){}
