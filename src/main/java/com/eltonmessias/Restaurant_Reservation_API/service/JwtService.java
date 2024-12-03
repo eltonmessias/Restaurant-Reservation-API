@@ -1,7 +1,6 @@
 package com.eltonmessias.Restaurant_Reservation_API.service;
 
 
-import com.eltonmessias.Restaurant_Reservation_API.config.JwtFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -11,14 +10,8 @@ import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Jwts;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -28,6 +21,7 @@ public class JwtService {
 
     public String generateToken(String email) {
         Map<String, Object> claims = new HashMap<>();
+//        claims.put("roles", roles);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -58,6 +52,11 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    private List<String> extractRoles(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("roles", List.class);
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
