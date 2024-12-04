@@ -5,10 +5,9 @@ import com.eltonmessias.Restaurant_Reservation_API.service.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tables")
@@ -19,5 +18,15 @@ public class TableController {
     @PostMapping("")
     public ResponseEntity<TableDTO> createTable(@RequestBody TableDTO tableDTO) {
         return new ResponseEntity<>(tableService.createTable(tableDTO), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<TableDTO>> getTables() {
+        return new ResponseEntity<>(tableService.getAllTables(), HttpStatus.OK);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<TableDTO> getTableById(@RequestParam int id) {
+        return new ResponseEntity<>(tableService.getTableById(id), HttpStatus.OK);
     }
 }
