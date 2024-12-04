@@ -29,4 +29,9 @@ public class TableController {
     public ResponseEntity<TableDTO> getTableById(@RequestParam int id) {
         return new ResponseEntity<>(tableService.getTableById(id), HttpStatus.OK);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TableDTO> updateTable(@PathVariable long id, @RequestBody TableDTO tableDTO) {
+        return new ResponseEntity<>(tableService.updateTable(id, tableDTO), HttpStatus.OK);
+    }
 }

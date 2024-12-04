@@ -2,6 +2,7 @@ package com.eltonmessias.Restaurant_Reservation_API.service;
 
 import com.eltonmessias.Restaurant_Reservation_API.dto.TableDTO;
 import com.eltonmessias.Restaurant_Reservation_API.exception.TableAlreadyExistsException;
+import com.eltonmessias.Restaurant_Reservation_API.exception.TableNotFoundException;
 import com.eltonmessias.Restaurant_Reservation_API.model.Tables;
 import com.eltonmessias.Restaurant_Reservation_API.repository.TableRepository;
 import org.springframework.beans.BeanUtils;
@@ -43,6 +44,22 @@ public class TableService {
         Tables table = tableRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Table not found"));
         return convertTableToDTO(table);
     }
+
+    public TableDTO updateTable(long id, TableDTO tableDTO) {
+        try {
+            Tables table = tableRepository.findById(id).orElseThrow(()->new TableNotFoundException("Table not found"));
+            table.setName(tableDTO.name());
+            table.setCapacity(tableDTO.capacity());
+            table.setStatus(tableDTO.status());
+            tableRepository.save(table);
+            return convertTableToDTO(table);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
 
 
 }
