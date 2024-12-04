@@ -34,4 +34,9 @@ public class TableController {
     public ResponseEntity<TableDTO> updateTable(@PathVariable long id, @RequestBody TableDTO tableDTO) {
         return new ResponseEntity<>(tableService.updateTable(id, tableDTO), HttpStatus.OK);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<TableDTO> updateStatus(@PathVariable long id, @RequestBody TableDTO tableDTO) {
+        return new ResponseEntity<>(tableService.changeStatus(id, tableDTO), HttpStatus.OK);
+    }
 }

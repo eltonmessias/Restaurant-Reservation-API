@@ -56,7 +56,17 @@ public class TableService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public TableDTO changeStatus(long id, TableDTO tableDTO) {
+        try {
+            Tables table = tableRepository.findById(id).orElseThrow(() -> new TableNotFoundException("Table not found"));
+            table.setStatus(tableDTO.status());
+            tableRepository.save(table);
+            return convertTableToDTO(table);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
