@@ -69,6 +69,16 @@ public class TableService {
         }
     }
 
+    public void deleteTable(long id) throws TableNotFoundException {
+        try {
+            Tables table = tableRepository.findById(id).orElseThrow(() -> new TableNotFoundException("Table not found"));
+            tableRepository.delete(table);
+        } catch (Exception e) {
+            throw new TableNotFoundException("table not found");
+        }
+
+    }
+
 
 
 
