@@ -4,6 +4,7 @@ import com.eltonmessias.Restaurant_Reservation_API.enums.RESERVATION_STATUS;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -18,6 +19,16 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "table_id")
     private Tables table;
-    private Date reservation_date;
+    @Enumerated(EnumType.STRING)
     private RESERVATION_STATUS status;
+    @Column(nullable = false)
+    private int numberOfPeople;
+    @Column(nullable = false)
+    private LocalDateTime checkinDate;
+    @Column(nullable = false)
+    private LocalDateTime checkoutDate;
+
+
+
+
 }
