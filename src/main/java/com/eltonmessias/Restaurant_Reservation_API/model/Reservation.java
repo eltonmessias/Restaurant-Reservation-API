@@ -20,6 +20,7 @@ public class Reservation {
     @JoinColumn(name = "table_id")
     private Tables table;
     @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private RESERVATION_STATUS status;
     @Column(nullable = false)
     private int numberOfPeople;

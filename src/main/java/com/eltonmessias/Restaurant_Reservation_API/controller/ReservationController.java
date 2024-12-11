@@ -20,13 +20,6 @@ public class ReservationController {
 
     @PostMapping("")
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) throws TableNotFoundException {
-        return new ResponseEntity<>(reservationService.makeReservation(
-                reservationDTO.tableId(),
-                reservationDTO.userId(),
-                reservationDTO.check_in(),
-                reservationDTO.check_out(),
-                reservationDTO.numberOfPeople(),
-                reservationDTO.status()
-        ), HttpStatus.CREATED);
+        return new ResponseEntity<>(reservationService.makeReservation(reservationDTO), HttpStatus.CREATED);
     }
 }

@@ -2,6 +2,7 @@ package com.eltonmessias.Restaurant_Reservation_API.service;
 
 import com.eltonmessias.Restaurant_Reservation_API.dto.ReservationDTO;
 import com.eltonmessias.Restaurant_Reservation_API.enums.RESERVATION_STATUS;
+import com.eltonmessias.Restaurant_Reservation_API.enums.TABLE_STATUS;
 import com.eltonmessias.Restaurant_Reservation_API.exception.TableExeption;
 import com.eltonmessias.Restaurant_Reservation_API.exception.TableNotFoundException;
 import com.eltonmessias.Restaurant_Reservation_API.exception.UserNotFoundException;
@@ -61,34 +62,40 @@ public class ReservationService {
 
         for(Reservation reservation : conflictingReservations){
             if(isOverlapping(reservation, checkin, checkout)){
+
                 return false;
+
             }
         }
-
-
-
+        System.out.println("Fora da hora");
         return true;
     }
 
-    private boolean isOverlapping(Reservation existingReservation, LocalDateTime checkin, LocalDateTime checkout){
+    private boolean isOverlapping(Reservation existingReservation, LocalDateTime checkin, LocalDateTime checkout) {
         LocalDateTime existingCheckin = existingReservation.getCheckinDate();
         LocalDateTime existingCheckout = existingReservation.getCheckoutDate();
 
-        return checkin.isBefore(existingCheckin) && checkout.isAfter(existingCheckout);
+        // Check if the new reservation overlaps with the existing reservation
+        return checkin.isBefore(existingCheckout) && checkout.isAfter(existingCheckin);
     }
 
-    public ReservationDTO makeReservation(long tableId, long userId, LocalDateTime checkin, LocalDateTime checkout, int numberOfPeople, RESERVATION_STATUS status) throws TableNotFoundException {
+    public ReservationDTO makeReservation(ReservationDTO reservationDTO) throws TableNotFoundException {
         Reservation reservation = new Reservation();
-        if(!checkTableAvailability(tableId, userId, checkin, checkout, numberOfPeople))
-            throw new TableExeption("Table is not available");
 
-        reservation.setCheckinDate(checkin);
-        reservation.setCheckoutDate(checkout);
-        reservation.setTable(tableRepository.findById(tableId).get());
-        reservation.setNumberOfPeople(numberOfPeople);
-        reservation.setUser(userRepository.findById(userId).get());
-        reservation.setStatus(status);
+        if(!checkTableAvailability(reservationDTO.tableId(), reservationDTO.userId(), reservationDTO.check_in(), reservationDTO.check_out(),reservationDTO.numberOfPeople()))
+            throw new TableExeption("Table is not available at this time");
+
+        Tables table = tableRepository.findById(reservationDTO.tableId()).get();
+        User user = userRepository.findById(reservationDTO.userId()).get();
+
+        reservation.setCheckinDate(reservationDTO.check_in());
+        reservation.setCheckoutDate(reservationDTO.check_out());
+        reservation.setTable(table);
+        reservation.setNumberOfPeople(reservationDTO.numberOfPeople());
+        reservation.setUser(user);
+        reservation.setStatus((reservationDTO.status()));
         reservationRepository.save(reservation);
+        table.setStatus(TABLE_STATUS.RESERVED);
         return convertToDTO(reservation);
     }
 
