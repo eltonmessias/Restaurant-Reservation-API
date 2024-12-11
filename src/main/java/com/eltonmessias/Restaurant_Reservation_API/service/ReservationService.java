@@ -129,7 +129,16 @@ public class ReservationService {
 
     public ReservationDTO updateReservation(ReservationDTO reservationDTO, long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(()-> new ObjectNotFoundException("Reservation not found"));
-        return convertToDTO(reservationRepository.save(reservation));
+        Tables table = tableRepository.findById(reservationDTO.tableId()).orElseThrow(()-> new ObjectNotFoundException("Table not found"));
+        User user = userRepository.findById(reservationDTO.userId()).orElseThrow(()-> new ObjectNotFoundException("User not found"));
+        reservation.setTable(table);
+        reservation.setUser(user);
+        reservation.setCheckinDate(reservationDTO.check_in());
+        reservation.setCheckoutDate(reservationDTO.check_out());
+        reservation.setNumberOfPeople(reservationDTO.numberOfPeople());
+        reservation.setStatus((reservationDTO.status()));
+        reservationRepository.save(reservation);
+        return convertToDTO(reservation);
     }
 
     public void deleteReservation(long reservationId) {

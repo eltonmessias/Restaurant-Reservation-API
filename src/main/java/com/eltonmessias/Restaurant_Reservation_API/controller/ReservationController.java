@@ -26,4 +26,17 @@ public class ReservationController {
     public ResponseEntity<List<ReservationDTO>> getReservations() {
         return new ResponseEntity<>(reservationService.getAllReservations(), HttpStatus.OK);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ReservationDTO> updateReservation(@PathVariable long id, @RequestBody ReservationDTO reservationDTO) {
+        return new ResponseEntity<>(reservationService.updateReservation(reservationDTO, id), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteReservation(@PathVariable long id) {
+        reservationService.deleteReservation(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
 }
