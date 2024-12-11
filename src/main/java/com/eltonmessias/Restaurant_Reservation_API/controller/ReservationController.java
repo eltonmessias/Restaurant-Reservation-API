@@ -38,5 +38,9 @@ public class ReservationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<ReservationDTO> cancelReservation(@PathVariable long id) {
+        reservationService.cancelReservation(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
