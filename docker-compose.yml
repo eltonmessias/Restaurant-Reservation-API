@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      - reservationAPI-network
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: messias8669
+      POSTGRES_DB: restaurant-reservation
+    ports:
+      - "5432:5432"
+    networks:
+      - reservationAPI-network
+    volumes:
+      - postgres-reservationAPI-data:/var/lib/postgresql/data
+
+networks:
+  reservationAPI-network:
+    driver: bridge
+
+volumes:
+  postgres-reservationAPI-data:
