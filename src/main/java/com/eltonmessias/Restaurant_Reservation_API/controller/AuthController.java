@@ -2,6 +2,8 @@ package com.eltonmessias.Restaurant_Reservation_API.controller;
 
 import com.eltonmessias.Restaurant_Reservation_API.dto.LoginDTO;
 import com.eltonmessias.Restaurant_Reservation_API.dto.UserDTO;
+import com.eltonmessias.Restaurant_Reservation_API.enums.ROLE;
+import com.eltonmessias.Restaurant_Reservation_API.model.User;
 import com.eltonmessias.Restaurant_Reservation_API.repository.UserRepository;
 import com.eltonmessias.Restaurant_Reservation_API.service.JwtService;
 import com.eltonmessias.Restaurant_Reservation_API.service.UserService;
@@ -21,6 +23,7 @@ import org.springframework.web.servlet.View;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -58,23 +61,17 @@ public class AuthController {
             return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.CONFLICT);
         }
     }
-//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/login")
-//    public ResponseEntity<?> login(@RequestBody @Valid LoginDTO loginDTO, BindingResult bindingResult) {
-//        try {
-//            UserDTO authenticatedUser = userService.loginUser(loginDTO);
-//            return new ResponseEntity<>(authenticatedUser, HttpStatus.OK);
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
-//        }
-//    }
     public ResponseEntity<?> login(@RequestBody LoginDTO credentials) {
         try {
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(credentials.email(), credentials.password()));
 
             if(authentication.isAuthenticated()){
-                String token = jwtService.generateToken(credentials.email());
+                User user = userRepository.findByEmail(credentials.email());
+                ROLE role = user.getRole();
+
+                String token = jwtService.generateToken(credentials.email(), role);
                 return ResponseEntity.ok(new AuthResponse(token, "Login Successfuly"));
             }else{
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(null, "Invalid email or password"));

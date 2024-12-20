@@ -1,6 +1,7 @@
 package com.eltonmessias.Restaurant_Reservation_API.service;
 
 
+import com.eltonmessias.Restaurant_Reservation_API.enums.ROLE;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -19,9 +20,10 @@ public class JwtService {
 
     private static final String SECRET = "jksdhfjhjhweihuehuiroh545uwhMndnnfnjdbbhsjneeoHojejdfhjie3543jb3";
 
-    public String generateToken(String email) {
+    public String generateToken(String email, ROLE role) {
         Map<String, Object> claims = new HashMap<>();
-//        claims.put("roles", roles);
+        claims.put("role", role.name());
+
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -54,10 +56,13 @@ public class JwtService {
                 .getBody();
     }
 
-    private List<String> extractRoles(String token) {
+    public ROLE extractRole(String token) {
         Claims claims = extractAllClaims(token);
-        return claims.get("roles", List.class);
+        String roleString = claims.get("role", String.class);
+        System.out.println("Extracted role: " + roleString);
+        return ROLE.valueOf(roleString);
     }
+
 
     public boolean validateToken(String token, UserDetails userDetails) {
         final String email = extractUserEmail(token);
@@ -71,4 +76,5 @@ public class JwtService {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
 }

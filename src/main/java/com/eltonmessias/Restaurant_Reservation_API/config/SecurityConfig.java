@@ -46,7 +46,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(user -> user.disable())
                 .authorizeHttpRequests(request ->
-                    request.requestMatchers(
+                    request
+                            .requestMatchers(HttpMethod.POST, "/api/tables").hasRole("ADMIN")
+                            .requestMatchers(
                             "/auth/login",
                             "/auth/register"
                     ).permitAll().anyRequest().authenticated())
