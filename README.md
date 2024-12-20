@@ -104,6 +104,11 @@ To run the application using Docker, follow these steps:
 
 ---
 
+## Swagger Documentation
+Access the API Documentation at: http://localhost:8080/swagger-ui.html
+
+---
+
 
 ## **Licence**
 
