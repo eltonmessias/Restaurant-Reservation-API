@@ -34,6 +34,7 @@ public class TableController {
         return new ResponseEntity<>(tableService.getTableById(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<TableDTO> updateTable(@PathVariable long id, @RequestBody TableDTO tableDTO) {
         return new ResponseEntity<>(tableService.updateTable(id, tableDTO), HttpStatus.OK);
@@ -44,6 +45,7 @@ public class TableController {
         return new ResponseEntity<>(tableService.changeStatus(id, tableDTO), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<TableDTO> deleteTable(@PathVariable long id) throws TableNotFoundException {
         tableService.deleteTable(id);
